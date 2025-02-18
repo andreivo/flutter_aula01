@@ -16,7 +16,8 @@ class App extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true, // Ativa o Material 3
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue), // Esquema padrão baseado no azul
+          seedColor: Colors.blue,
+        ), // Esquema padrão baseado no azul
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.blue[900], // Azul mais forte para o AppBar
           foregroundColor: Colors.white, // Texto e ícones brancos no AppBar
@@ -49,12 +50,7 @@ class _HomepageState extends State<Homepage> {
     if (newTaskCtrl.text.isEmpty) return;
 
     setState(() {
-      widget.items.add(
-        Item(
-          title: newTaskCtrl.text,
-          done: false,
-        ),
-      );
+      widget.items.add(Item(title: newTaskCtrl.text, done: false));
       newTaskCtrl.text = "";
     });
   }
@@ -66,15 +62,10 @@ class _HomepageState extends State<Homepage> {
         title: TextFormField(
           controller: newTaskCtrl,
           keyboardType: TextInputType.text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-          ),
+          style: TextStyle(color: Colors.white, fontSize: 18),
           decoration: InputDecoration(
             labelText: "Nova Tarefa",
-            labelStyle: TextStyle(
-              color: Colors.white,
-            ),
+            labelStyle: TextStyle(color: Colors.white),
           ),
         ),
       ),
