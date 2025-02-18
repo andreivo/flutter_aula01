@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:aula01_todo/models/item.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(App());
@@ -33,10 +36,6 @@ class Homepage extends StatefulWidget {
 
   Homepage({super.key}) {
     items = [];
-
-    items.add(Item(title: "Banana", done: false));
-    items.add(Item(title: "Abacate", done: true));
-    items.add(Item(title: "Laranja", done: false));
   }
 
   @override
@@ -52,7 +51,40 @@ class _HomepageState extends State<Homepage> {
     setState(() {
       widget.items.add(Item(title: newTaskCtrl.text, done: false));
       newTaskCtrl.text = "";
+      saveItems();
     });
+  }
+
+  void removeItem(int index) {
+    setState(() {
+      widget.items.removeAt(index);
+      saveItems();
+    });
+  }
+
+  Future loadItems() async {
+    // await Future.delayed(Duration(seconds: 2));
+    var prefs = await SharedPreferences.getInstance();
+    var data = prefs.getString("data");
+
+    if (data != null) {
+      Iterable decoded = jsonDecode(data);
+      List<Item> result = decoded.map((x) => Item.fromJson(x)).toList();
+      setState(() {
+        widget.items = result;
+      });
+    }
+
+    return Future.value();
+  }
+
+  Future saveItems() async {
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.setString("data", jsonEncode(widget.items));
+  }
+
+  _HomepageState() {
+    loadItems();
   }
 
   @override
@@ -73,16 +105,27 @@ class _HomepageState extends State<Homepage> {
         itemCount: widget.items.length,
         itemBuilder: (ctxt, index) {
           final item = widget.items[index];
-
-          return CheckboxListTile(
-            title: Text(item.title!),
+          return Dismissible(
             key: Key(item.title!),
-            value: item.done,
-            onChanged: (value) {
-              setState(() {
-                item.done = value;
-              });
+            background: Container(
+              color: Colors.red.withValues(alpha: 0.2),
+              child: Center(
+                child: Text("Excluir"),
+              ),
+            ),
+            onDismissed: (direction) {
+              removeItem(index);
             },
+            child: CheckboxListTile(
+              title: Text(item.title!),
+              value: item.done,
+              onChanged: (value) {
+                setState(() {
+                  item.done = value;
+                  saveItems();
+                });
+              },
+            ),
           );
         },
       ),

@@ -1,3 +1,6 @@
-# aula01_todo
+# Flutter - Aula 01
 
-A new Flutter project.
+Construindo um App de Todo-List.
+
+Um simples projeto para compreender a estrutura de um APP construído para mobile utilizando Flutter.
+Esta aula é referente ao curso do Balta.io.
